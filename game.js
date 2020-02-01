@@ -18,14 +18,25 @@ class Card {                                                            //Start 
             else return 11;
         }
         else {
-            return Number(this.number)
+            return Number(this.number);
         }
     }
+
+    displayCard() {
+        if (this.color === 'Diamonds' || this.color === 'Hearts') {
+            console.log(chalk.red.inverse(" " + this.number + " " + this.color + " "));
+        }
+        else {
+            console.log(chalk.bgWhite.black(" " + this.number + " " + this.color + " "));
+        }
+    }
+
+    
 }
 
 class Deck {
     constructor() {
-        this.cards = this.generate()
+        this.cards = this.generate();
         this.isCardTaken = new Array(this.cards.length).fill(false);
 
     }
@@ -36,7 +47,7 @@ class Deck {
         const color = ["Clubs", "Diamonds", "Hearts", "Spades"];
         for (let i = 0; i < number.length; i++) {
             for (let j = 0; j < color.length; j++) {
-                let card = new Card(number[i], color[j])
+                let card = new Card(number[i], color[j]);
                 array.push(card);
             }
         }
@@ -53,26 +64,26 @@ class Deck {
     }
     display() {
         for (let i = 0; i < this.cards.length; i++) {
-            console.log(this.cards[i].number + " " + this.cards[i].color)
+            console.log(this.cards[i].number + " " + this.cards[i].color);
         }
     }
 }                                                                           // End Deck
 
-const displayCard = (card) => {
-    console.log(card.number + " " + card.color)
+const displayCard = (card) => {                                             // forEach
+    card.displayCard();
 }
 
 class Player {                                                              //Player
     constructor(deck) {
         this.hand = [];
         for (let i = 0; i < 2; i++) {
-            this.hand.push(deck.randomCard())
+            this.hand.push(deck.randomCard());
         }
     }
     addPoint() {
         this.point = 0;
         for (let i = 0; i < this.hand.length; i++) {
-            this.point += this.hand[i].getValue()
+            this.point += this.hand[i].getValue();
         }
         return this.point
     }
@@ -89,88 +100,88 @@ let exit = false;
 
 while (true) {                                              //firstWhile
 
-    if (exit === true) {
-        break
+    if (exit) {
+        break;
     }
 
-    const deck = new Deck()
-    let user = new Player(deck)
-    let dealer = new Player(deck)
+    const deck = new Deck();
+    let user = new Player(deck);
+    let dealer = new Player(deck);
     let dealerAI = false;
 
     while (true) {                                          //secondWhile
 
         console.clear();
 
-        if(dealerAI === true) {
-            dealer.hand.forEach(displayCard)
-            console.log(dealer.addPoint())
+        if(dealerAI ) {
+            dealer.hand.forEach(displayCard);
+            console.log(dealer.addPoint());
         }
         else {
-            displayCard(dealer.hand[0])
-            console.log("*********")
-            console.log(dealer.hand[0].getValue())
+            displayCard(dealer.hand[0]);
+            console.log("*********");
+            console.log(dealer.hand[0].getValue());
         }
-        console.log("------------------------------")
-        user.hand.forEach(displayCard)
-        console.log(user.addPoint())
+        console.log("------------------------------");
+        user.hand.forEach(displayCard);
+        console.log(user.addPoint());
 
 
         if (user.addPoint() > 21) {                             // Condition of losing
             console.log(" You lose! ");
-            wait(3000)
-            break
+            wait(3000);
+            break;
         }
 
-        if (dealerAI === true) {                                // Start deaker Ai
+        if (dealerAI ) {                                // Start deaker Ai
             if (dealer.addPoint() > 21) {
                 console.log(" You win !");
-                wait(3000)
-                break
+                wait(3000);
+                break;
             }
             else {
                 if (dealer.addPoint() > user.addPoint()) {
                     console.log(" You lose! ");
-                    wait(3000)
-                    break
+                    wait(3000);
+                    break;
                 }
                 else {
                     if (dealer.addPoint() === user.addPoint()) {
                         console.log("TIE");
-                        wait(3000)
-                        break
+                        wait(3000);
+                        break;
                     }
                     else if (dealer.addPoint() !== user.addPoint()) {
-                        console.log(" You win !")
-                        wait(3000)
-                        break
+                        console.log(" You win !");
+                        wait(3000);
+                        break;
                     }
 
                 }
             }
         }                                                                               // End deaker Ai
         
-        choice = ['HIT', 'STAND', 'SURRENDER'],
-            index = readlineSync.keyInSelect(choice, null, { cancel: 'EXIT' });
+        choice = [chalk.black.bgCyan(' HIT '), chalk.black.bgMagenta(' STAND '),chalk.black.bgGreen(' SURRENDER ')],
+            index = readlineSync.keyInSelect(choice, null, { cancel: chalk.black.bgRgb(236,194,25)(' EXIT ') });
 
         if (choice[index] === "HIT") {
-            user.hand.push(deck.randomCard())
+            user.hand.push(deck.randomCard());
             continue
         }
         else if (choice[index] === 'STAND') {
             for (i = dealer.addPoint(); i <= 16; i = dealer.addPoint()) {
-                dealer.hand.push(deck.randomCard())
+                dealer.hand.push(deck.randomCard());
             }
             dealerAI = true;
         }
         else if (choice[index] === 'SURRENDER') {
-            console.log(" YOU GAVE UP !")
-            wait(3000)
-            break
+            console.log(" YOU GAVE UP !");
+            wait(3000);
+            break;
         }
         else if (choice[index] === undefined) {
             exit = true;
-            break
+            break;
         }
     }
 }
